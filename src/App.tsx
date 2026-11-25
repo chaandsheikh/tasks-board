@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { Link, Route, Routes, useParams } from 'react-router'
 import { TASKS } from './tasks'
 
@@ -10,7 +11,7 @@ function TaskList() {
       {TASKS.map((t) => (
         <li key={t.id}>
           <Link to={`/tasks/${t.id}`}
-            className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm hover:border-indigo-400">
+            className="flex items-center justify-between rounded-xl border border-slate-200 bg-white px-5 py-4 shadow-sm hover:border-indigo-400 dark:border-slate-700 dark:bg-slate-800">
             <span className={t.done ? 'text-slate-400 line-through' : 'font-medium'}>{t.title}</span>
             <span className="text-sm text-slate-500">{t.owner}</span>
           </Link>
@@ -25,7 +26,7 @@ function TaskPage() {
   const task = TASKS.find((t) => t.id === Number(id))
   if (!task) return <p>No task with id {id}.</p>
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+    <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-800">
       <h2 className="text-2xl font-semibold">{task.title}</h2>
       <p className="mt-2 text-slate-600">Owner: {task.owner}</p>
       <p className="mt-1 text-slate-600">Status: {task.done ? 'Done' : 'Open'}</p>
@@ -35,16 +36,25 @@ function TaskPage() {
 }
 
 export default function App() {
+  const [dark, setDark] = useState(false)
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
+    <div className={dark ? 'dark' : ''}>
+    <div className="min-h-screen bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
       <main className="mx-auto max-w-2xl px-6 py-12">
-        <h1 className="mb-8 text-4xl font-bold">Tasks board</h1>
+        <div className="mb-8 flex items-center justify-between">
+          <h1 className="text-4xl font-bold">Tasks board</h1>
+          <button onClick={() => setDark(!dark)}
+            className="rounded-full border border-slate-300 px-4 py-2 text-sm dark:border-slate-600">
+            {dark ? 'Light mode' : 'Dark mode'}
+          </button>
+        </div>
         <Routes>
           <Route path="/" element={<TaskList />} />
           <Route path="/tasks/:id" element={<TaskPage />} />
         </Routes>
         <footer className="mt-12 text-sm text-slate-500">API: {apiUrl}</footer>
       </main>
+    </div>
     </div>
   )
 }
